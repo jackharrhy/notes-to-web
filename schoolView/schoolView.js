@@ -1,6 +1,6 @@
 var
 	xmlhttp = new XMLHttpRequest(),
-	url = 'db.json'
+	url = 'schoolFiles.json'
 	parser = new DOMParser();
 
 function getProperty(obj, path) {
@@ -14,7 +14,17 @@ function getProperty(obj, path) {
 		obj = obj[prop];
 	}
 
-	return obj[props[i]];
+	var foundProperty = obj[props[i].replace('/', '')];
+
+	console.log(foundProperty);
+
+	if(typeof(foundProperty) == 'object') {
+		return 'wot';
+	} else if(typeof(foundProperty) == 'string') {
+		return foundProperty
+	} else {
+		return 'Not a string or object!';
+	}
 }
 
 function getQueryVariable(variable) {
@@ -30,7 +40,6 @@ function getQueryVariable(variable) {
 
 function handleJSON(json) {
 	console.log(json);
-
 	var htmlString = markdown.toHTML(
 		getProperty(json, getQueryVariable('md'))
 	);
