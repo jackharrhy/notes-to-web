@@ -13,7 +13,7 @@ var
 	file = require('file'),
 	stringify = require('json-stringify-safe'),
 
-	finalJSON = {};
+	finalJSON = {},
 
 	// Functions
 	arrayToNestedObject = function(obj, keyPath, value) {
@@ -38,13 +38,14 @@ var
 			for(foundFile in files) {
 				if(path.extname(files[foundFile]) == '.md') {
 					var fileAsArray = files[foundFile].split('/');
+					fileAsArray[fileAsArray.length-1] = fileAsArray[fileAsArray.length-1].replace('.md', '');
 					arrayToNestedObject(finalJSON, fileAsArray, fs.readFileSync(files[foundFile], {encoding: 'utf-8'}));
 				}
 			}
 
 			if(timesRan == timesShouldRun) {
-				finalJSON = finalJSON.root;
-				console.log(finalJSON.geo.notes['march18th.md']);
+				finalJSON = finalJSON[rootDir.replace('/', '')];
+				//console.log(finalJSON);
 
 				fs.writeFileSync('db.json', stringify(finalJSON));
 			}
