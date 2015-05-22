@@ -1,57 +1,68 @@
 var
-	xmlhttp = new XMLHttpRequest(),
-	url = 'schoolFiles.json'
-	parser = new DOMParser();
+	props, prop,
+	dirListing,
+
+	json = null;
 
 function getProperty(obj, path) {
-	var
-		props = path.split('.'),
-		i = 0,
-		prop;
+	if(path == '') {
+		dirListing = '';
+		for(thing in obj) {
+			dirListing += '+ ' + String(thing) + '\n\n';
+		}
+		return dirListing;
+	}
 
-	for(; i<props.length - 1; i++) {
+	props = path.split('.');
+
+	for(var i=0; i<props.length - 1; i++) {
 		prop = props[i];
 		obj = obj[prop];
 	}
 
-	var foundProperty = obj[props[i].replace('/', '')];
-
+	foundProperty = obj[props[i]];
 	console.log(foundProperty);
 
-	if(typeof(foundProperty) == 'object') {
-		return 'wot';
-	} else if(typeof(foundProperty) == 'string') {
-		return foundProperty
+	if(typeof(foundProperty) == 'string') {
+		return foundProperty;
+	} else if(typeof(foundProperty) == 'object') {
+		dirListing = '';
+		for(thing in foundProperty) {
+			dirListing += String(thing) + '\n\n';
+		}
+		return dirListing;
 	} else {
-		return 'Not a string or object!';
+		return 'Error';
 	}
 }
 
-function getQueryVariable(variable) {
-	var
-		query = window.location.search.substring(1),
-		vars = query.split("&");
-	for (var i=0;i<vars.length;i++) {
-		var pair = vars[i].split("=");
-		if(pair[0] == variable) { return pair[1]; }
-	}
-	return(false);
+var output = document.getElementById('output');
+
+function loadFileIntoDOM(fileAsString) {
+	output.innerHTML = markdown.toHTML(getProperty(json, fileAsString));
 }
 
-function handleJSON(json) {
-	console.log(json);
-	var htmlString = markdown.toHTML(
-		getProperty(json, getQueryVariable('md'))
-	);
-	document.getElementById('root').innerHTML = htmlString;
+var fileSelector = document.getElementById('fileSelector');
+
+fileSelector.onkeypress = function(e) {
+	if (!e) e = window.event;
+		var keyCode = e.keyCode || e.which;
+	if (keyCode == '13') {
+		loadFileIntoDOM(fileSelector.value);
+	}
 }
+
+// Load School Database
+var
+	xmlhttp = new XMLHttpRequest(),
+	parser = new DOMParser();
 
 xmlhttp.onreadystatechange = function() {
 	if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-		var json = JSON.parse(xmlhttp.responseText);
-		handleJSON(json);
+		json = JSON.parse(xmlhttp.responseText);
+		loadFileIntoDOM('');
 	}
 }
-xmlhttp.open("GET", url, true);
+xmlhttp.open("GET", 'schoolFiles.json', true);
 xmlhttp.send();
 

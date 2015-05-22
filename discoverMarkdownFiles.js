@@ -47,7 +47,7 @@ var
 				finalJSON = finalJSON[rootDir.replace('/', '')];
 				//console.log(finalJSON);
 
-				fs.writeFileSync('db.json', stringify(finalJSON));
+				fs.writeFileSync('schoolFiles.json', stringify(finalJSON));
 			}
 		});
 	};
