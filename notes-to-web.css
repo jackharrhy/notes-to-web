@@ -1,0 +1,25 @@
+body, html {
+	height: 100%;
+}
+body {
+	margin: 0;
+}
+
+#output {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+
+	padding: 2em 2em;
+	-moz-box-sizing: border-box; 
+	-webkit-box-sizing: border-box; 
+	box-sizing: border-box; 
+
+	font-family: Helvetica;
+}
+
+.seperator {
+	margin-top: 3em;
+	border-top: 6px double black;
+	border-bottom: 6px double black;
+}
